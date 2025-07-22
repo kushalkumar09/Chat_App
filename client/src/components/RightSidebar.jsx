@@ -37,6 +37,7 @@ const RightSidebar = ({ selectedUser, messages = [] }) => {
             {mediaMessages.map((url, index) => (
               <div
                 key={index}
+                onClick={()=> window.open(url, "_blank")}
                 className="relative group cursor-pointer rounded-lg overflow-hidden bg-white/5 border border-white/10"
               >
                 <img
