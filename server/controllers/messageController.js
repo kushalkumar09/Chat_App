@@ -16,9 +16,9 @@ export const getUserForSideBar = async (req, res) => {
             }
         })
         await Promise.all(promises);
-        return res.json({ sucess: true, users: fileredUsers, unseenMessages });
+        return res.json({ success: true, users: fileredUsers, unseenMessages });
     } catch (err) {
-        res.status(500).json({ sucess: false, message: "Error fetching users" });
+        res.status(500).json({ success: false, message: "Error fetching users" });
     }
 }
 
@@ -38,9 +38,9 @@ export const getMessages = async (req, res) => {
             { $set: { seen: true } }
         );
 
-        return res.json({ sucess: true, messages });
+        return res.json({ success: true, messages });
     } catch (err) {
-        res.status(500).json({ sucess: false, message: "Error fetching messages" });
+        res.status(500).json({ success: false, message: "Error fetching messages" });
     }
 }
 
@@ -53,9 +53,9 @@ export const markMessageAsSeen = async (req, res) => {
             { seen: true },
         );
 
-        return res.json({ sucess: true, message: "Messages marked as seen" });
+        return res.json({ success: true, message: "Messages marked as seen" });
     } catch (err) {
-        res.status(500).json({ sucess: false, message: "Error marking messages as seen" });
+        res.status(500).json({ success: false, message: "Error marking messages as seen" });
     }
 }
 

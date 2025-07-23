@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import { useContext, useState } from 'react';
 import assets from '../assets/assets'; // Adjust path if needed
+import { AuthContext } from '../../context/AuthContext';
 
 const LoginPage = () => {
   const [currState, setCurrState] = useState('Login');
-  const [fllName,setfullName] = useState('');
+  const [fullName,setfullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [bio, setBio] = useState('');
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
-
+  const { login } = useContext(AuthContext);
+  const onSubmitHandler = (e) =>{
+    e.preventDefault();
+    if(currState === 'Sign Up'){
+      login('signup', {fullName, email, password});
+    }
+    else{
+      login('login', {email, password});
+    }
+  }
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
       
@@ -25,7 +35,7 @@ const LoginPage = () => {
         {/* Example input fields */}
          {currState === 'Sign Up' && (<input
           type="text"
-          value={fllName}
+          value={fullName}
           onChange={(e) => setfullName(e.target.value)}
           placeholder="Full Name"
           className="p-3 rounded-md bg-white/10 text-white border border-gray-400 placeholder-gray-300 outline-none"
@@ -48,6 +58,7 @@ const LoginPage = () => {
 
         <button
           type="submit"
+          onClick={onSubmitHandler}
           className="bg-violet-600 hover:bg-violet-700 transition p-3 rounded-md text-white font-semibold"
         >
           {currState==="Sign Up" ? "Create Account" : "Login Now"}

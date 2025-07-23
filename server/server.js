@@ -40,10 +40,12 @@ io.on("connection", (socket) => {
 
 // middleware setup
 app.use(express.json({
-    limit:'4mb'
+    limit:'10mb'
 }));
 
-app.use(cors());
+app.use(cors({
+  origin: "*"
+}));
 app.use("/api/status",(req,res)=>{
     res.send("Server is running") ;
 })

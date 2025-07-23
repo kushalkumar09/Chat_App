@@ -37,7 +37,7 @@ export const userSignUp = async (req, res) => {
         const token = generateToken(user._id);
 
         res.status(201).json({
-            sucess: true,
+            success: true,
             message: "User created successfully",
             user: {
                 _id: user._id,
@@ -47,7 +47,7 @@ export const userSignUp = async (req, res) => {
             token,
         });
     } catch (err) {
-        res.status(500).json({ message: "Error creating user", sucess: false });
+        res.status(500).json({ message: "Error creating user", success: false });
     }
 };
 
@@ -69,7 +69,7 @@ export const userLogin = async (req, res) => {
         const token = generateToken(user._id);
 
         res.json({
-            sucess: true,
+            success: true,
             message: "Login successful",
             user: {
                 _id: user._id,
@@ -84,7 +84,7 @@ export const userLogin = async (req, res) => {
 };
 
 export const checkAuth = (req, res) => {
-    res.json({ sucess: true, message: "User is authenticated", user: req.user });
+    res.json({ success: true, message: "User is authenticated", user: req.user });
 };
 
 // PUT /api/users/:id
@@ -92,13 +92,17 @@ export const updateUserProfile = async (req, res) => {
     try {
         const { fullName, bio, profilePic } = req.body;
         const userId = req.user._id;
+        if (!profilePic || profilePic.startsWith("https://res.cloudinary.com")) {
+            return res.status(400).json({ message: "Invalid or duplicate image" });
+        }
         let updatedUser;
         if (!profilePic) {
             updatedUser = await User.findByIdAndUpdate(userId, { fullName, bio }, { new: true });
         } else {
             const upload = await cloudinary.uploader.upload(profilePic, {
-                folder: "Quick_Chat_App",
-                resource_type: "auto",
+                folder: "Quick_Chat_Profile",
+                public_id: `user_${userId}_profile`,
+                overwrite: true,
             });
             updatedUser = await User.findByIdAndUpdate(userId,
                 { fullName, bio, profilePic: upload.secure_url },
