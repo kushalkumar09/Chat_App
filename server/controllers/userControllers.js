@@ -90,14 +90,12 @@ export const checkAuth = (req, res) => {
 // PUT /api/users/:id
 export const updateUserProfile = async (req, res) => {
     try {
-        const { fullName, bio, profilePic } = req.body;
+        const { fullName, bio:bioText, profilePic } = req.body;
         const userId = req.user._id;
-        if (!profilePic || profilePic.startsWith("https://res.cloudinary.com")) {
-            return res.status(400).json({ message: "Invalid or duplicate image" });
-        }
+       
         let updatedUser;
         if (!profilePic) {
-            updatedUser = await User.findByIdAndUpdate(userId, { fullName, bio }, { new: true });
+            updatedUser = await User.findByIdAndUpdate(userId, { fullName, bioText }, { new: true });
         } else {
             const upload = await cloudinary.uploader.upload(profilePic, {
                 folder: "Quick_Chat_Profile",
@@ -105,7 +103,7 @@ export const updateUserProfile = async (req, res) => {
                 overwrite: true,
             });
             updatedUser = await User.findByIdAndUpdate(userId,
-                { fullName, bio, profilePic: upload.secure_url },
+                { fullName, bioText, profilePic: upload.secure_url },
                 { new: true }
             );
         }

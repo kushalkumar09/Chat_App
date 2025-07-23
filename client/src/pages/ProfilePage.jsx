@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import assets from '../assets/assets';
 import { AuthContext } from '../../context/AuthContext';
@@ -9,8 +9,8 @@ const ProfilePage = () => {
   console.log('authUser', authUser);
   const [selectedImg, setSelectedImg] = useState(null);
   const navigate = useNavigate();
-  const [name, setName] = useState(authUser.fullName??'John Doe');
-  const [bio, setBio] = useState(authUser.bio??'Hi Everyone, I am using QuickChat');
+  const [name, setName] = useState(authUser.fullName || 'John Doe');
+  const [bio, setBio] = useState(authUser.bioText || 'Hi Everyone, I am using QuickChat');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,6 +27,8 @@ const ProfilePage = () => {
       navigate('/');
     }
   };
+
+  useEffect(()=>{},[authUser]);
 
 
   return (
