@@ -85,6 +85,9 @@ export const sendMessage = async (req, res) => {
         }], { session });
 
         // If any error happens here, the message will be rolled back
+        console.log("New message created:", newMessage[0]);
+        console.log("recieverId:", receiverId);
+        console.log("userSocketMap:", userSocketMap);
         const receiverSocketId = userSocketMap[receiverId];
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("newMessage", newMessage[0]);

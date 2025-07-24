@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
         default: "Hi there! I am using Quick Chat App.",
     }
 
-}, { timeStamps: true });
+}, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
 export default User;
