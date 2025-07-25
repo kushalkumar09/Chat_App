@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import io from "socket.io-client";
 
-const backendUrl = import.meta.env.VITE_bACKEND_URL || "http://localhost:3000";
+const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 axios.defaults.baseURL = backendUrl;
 
 export const AuthContext = createContext();
