@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
     bioText: {
         type: String,
         default: "Hi there! I am using Quick Chat App.",
+    },
+    lastSeen:{
+        type:Date,
+        
     }
 
 }, { timestamps: true });

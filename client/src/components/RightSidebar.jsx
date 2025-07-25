@@ -1,13 +1,27 @@
 "use client"
 
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import assets, { imagesDummyData } from "../assets/assets"
+import { AuthContext } from "../../context/AuthContext"
+import { ChatContext } from "../../context/ChatContext"
+import { formatMessageTime } from "../lib/utils"
+import { useNavigate } from "react-router"
 
-const RightSidebar = ({ selectedUser, messages = [] }) => {
+const RightSidebar = ({ selectedUser}) => {
   const [activeView, setActiveView] = useState("profile")
+  const { onlineUsers } = useContext(AuthContext);
+  const { messages } = useContext(ChatContext);
+  const [msgImages, setMsgImages] = useState([]);
+  const isSelectedUserOnline = selectedUser && onlineUsers.includes(selectedUser._id);
+  const navigate = useNavigate();
 
   // Filter messages to get only media messages
-  const mediaMessages = imagesDummyData
+  const mediaMessages = msgImages??imagesDummyData;
+
+  useEffect(()=>{
+    console.log("Messages in RightSidebar:", messages);
+    setMsgImages(messages.filter(msg => msg.image).map(msg => msg.image));
+  }, [messages] );
 
   // Get media count
   const mediaCount = mediaMessages.length
@@ -123,13 +137,13 @@ const RightSidebar = ({ selectedUser, messages = [] }) => {
               alt={selectedUser?.fullName || "User"}
               className="w-24 h-24 rounded-full border-4 border-white/30 shadow-2xl object-cover"
             />
-            <span className="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-green-500 border-3 border-slate-900 shadow-lg"></span>
+            {isSelectedUserOnline?<span className="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-green-500 border-3 border-slate-900 shadow-lg"></span>:<span className="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-gray-500 border-3 border-slate-900 shadow-lg"></span>}
           </div>
 
           {/* User Info */}
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-white">{selectedUser.fullName}</h1>
-            <p className="text-sm text-green-400 font-medium">Online</p>
+            {isSelectedUserOnline?<p className="text-sm text-green-400 font-medium">Online</p>:<p className="text-sm text-gray-400 font-medium">Offline</p>}
             {selectedUser.bio && (
               <p className="text-sm text-gray-300 leading-relaxed max-w-xs mx-auto mt-3 px-2">{selectedUser.bio}</p>
             )}
@@ -139,7 +153,7 @@ const RightSidebar = ({ selectedUser, messages = [] }) => {
 
       {/* Action Buttons */}
       <div className="p-4 space-y-3">
-        <button className="w-full flex items-center gap-3 p-3 bg-white/10 hover:bg-white/15 rounded-xl transition-colors duration-200 border border-white/10">
+        {/* <button className="w-full flex items-center gap-3 p-3 bg-white/10 hover:bg-white/15 rounded-xl transition-colors duration-200 border border-white/10">
           <div className="w-10 h-10 bg-violet-600/20 rounded-full flex items-center justify-center">
             <svg className="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -165,7 +179,7 @@ const RightSidebar = ({ selectedUser, messages = [] }) => {
             </svg>
           </div>
           <span className="text-white font-medium">Video Call</span>
-        </button>
+        </button> */}
 
         <button
           onClick={() => setActiveView("media")}
@@ -223,7 +237,7 @@ const RightSidebar = ({ selectedUser, messages = [] }) => {
             </div>
             <div>
               <p className="text-xs text-gray-400">Last seen</p>
-              <p className="text-sm text-white font-medium">Just now</p>
+              <p className="text-sm text-white font-medium">{(formatMessageTime(selectedUser.lastSeen) !== "Invalid Date") ? formatMessageTime(selectedUser.lastSeen) : "Not available"}</p>
             </div>
           </div>
 
@@ -258,10 +272,10 @@ const RightSidebar = ({ selectedUser, messages = [] }) => {
                 d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span className="text-gray-300 text-sm">View Profile</span>
+            <span onClick={()=>navigate("/profile")} className="text-gray-300 text-sm">View My Profile</span>
           </button>
 
-          <button className="w-full flex items-center gap-3 p-3 hover:bg-white/10 rounded-lg transition-colors duration-200 text-left">
+          {/* <button className="w-full flex items-center gap-3 p-3 hover:bg-white/10 rounded-lg transition-colors duration-200 text-left">
             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -283,6 +297,13 @@ const RightSidebar = ({ selectedUser, messages = [] }) => {
               />
             </svg>
             <span className="text-red-400 text-sm">Delete Chat</span>
+          </button> */}
+          <button className="w-full flex items-center gap-3 p-3 hover:bg-red-600/10 rounded-lg transition-colors duration-200 text-left text-red-500 font-bold border-2 border-red-500/20">
+          <svg className="w-5 h-5 text-red-500" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /> 
+          </svg>
+          Logout 
           </button>
         </div>
       </div>
